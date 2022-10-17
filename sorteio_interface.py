@@ -1,6 +1,5 @@
 import random
 import sys
-import tkinter as tk
 
 import pygame
 from PySide6.QtCore import Qt, Slot, QTimer
