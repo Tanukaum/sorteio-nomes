@@ -1,73 +1,106 @@
-import tkinter as tk
 import random
+import sys
+import tkinter as tk
+
 import pygame
+from PySide6.QtCore import Qt, Slot, QTimer
+from PySide6.QtGui import QMovie
+from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QGridLayout,
+                               QLineEdit, QPushButton, QVBoxLayout, QWidget)
 
 pygame.mixer.init()
 pygame.mixer.music.load("Bau.mp3")
 
-def sorteio():
-    global count
-    pygame.mixer.music.play()
-    count = 0
-    count10()
-   
-    
+class Window(QWidget):
+	def __init__(self):
+		super().__init__()
+		self.setGeometry(100,100,500,400)
+		self.setWindowTitle("Sorteio")
+		self.main_vLayout = QVBoxLayout()
 
-def count10():
-    global count
-    count = count+0.1
-    n1 = nomes_random[random.randrange(len(nomes_random))]
-    n2 = nomes_random[random.randrange(len(nomes_random))]
-    n3 = nomes_random[random.randrange(len(nomes_random))]
+		self.hLayout_1 = QHBoxLayout()
+		self.main_vLayout.addLayout(self.hLayout_1)
 
-    pessoa_1.set(n1)
-    pessoa_2.set(n2)
-    pessoa_3.set(n3)
+		self.hLayout_2 = QHBoxLayout()
+		self.main_vLayout.addLayout(self.hLayout_2)
 
-    if count >=10:
-        pessoa_1.set(p1)
-        pessoa_2.set(p2)
-        pessoa_3.set(p3)
-        label_text.set("PARABÉNS!!!")
-    
-    label_count.after(100,count10)
-    
+		self.grid_pessoa = QGridLayout()
+		self.hLayout_2.addLayout(self.grid_pessoa)
+		
+		
+
+		self.timer = QTimer()
+		self.timer.timeout.connect(self.count10)
+
+
+		self.pessoa_2 = QLineEdit()
+		self.label_pessoal_2 = QLabel()
+		self.label_pessoal_2.setText('2º Lugar')
+		self.grid_pessoa.addWidget(self.label_pessoal_2,0,0,Qt.AlignHCenter)
+		self.grid_pessoa.addWidget(self.pessoa_2,1,0)
+		self.pessoa_2.setText(' ')
+		self.pessoa_2.setContentsMargins(0,0,0,25)
+
+		self.pessoa_1 = QLineEdit()
+		self.label_pessoa_1 = QLabel()
+		self.label_pessoa_1.setText('1º Lugar')
+		self.grid_pessoa.addWidget(self.label_pessoa_1,0,1,Qt.AlignHCenter)
+		self.grid_pessoa.addWidget(self.pessoa_1,1,1)
+		self.pessoa_1.setText(' ')
+		self.pessoa_1.setContentsMargins(0,0,0,55)
+
+		self.pessoa_3 = QLineEdit()
+		self.label_pessoa_3 = QLabel()
+		self.label_pessoa_3.setText('3º Lugar')
+		self.grid_pessoa.addWidget(self.label_pessoa_3,0,2,Qt.AlignHCenter)
+		self.grid_pessoa.addWidget(self.pessoa_3,1,2)
+		self.pessoa_3.setText(' ')
+
+		self.label = QLabel(self)
+		self.hLayout_1.addWidget(self.label)
+		self.label.setAlignment(Qt.AlignHCenter)
+
+		self.button = QPushButton('Sortear')
+		self.main_vLayout.addWidget(self.button)
+		self.button.clicked.connect(self.sorteio)
+
+		self.movie = QMovie('piao2.gif')
+		self.label.setMovie(self.movie)
+		
+		self.movie.start()
+		self.setLayout(self.main_vLayout)
+		
+	@Slot()
+	def sorteio(self):
+		global count
+		pygame.mixer.music.play()
+		count = 0
+		self.count10()
+
+	@Slot()
+	def count10(self):
+		global count
+		count = count+0.1
+		n1 = nomes_random[random.randrange(len(nomes_random))]
+		n2 = nomes_random[random.randrange(len(nomes_random))]
+		n3 = nomes_random[random.randrange(len(nomes_random))]
+
+		self.pessoa_1.setText(n1)
+		self.pessoa_2.setText(n2)
+		self.pessoa_3.setText(n3)
+
+		if count >=10:
+			self.pessoa_1.setText(p1)
+			self.pessoa_2.setText(p2)
+			self.pessoa_3.setText(p3)
+		self.timer.start(100)
+	
+
+	
+
 
 global count
 count = 0
-root = tk.Tk()
-root.resizable(500,500)
-frame_a= tk.Frame(root)
-frame_esq = tk.Frame(frame_a)
-frame_meio = tk.Frame(frame_a)
-frame_dir = tk.Frame(frame_a)
-
-pessoa_1 = tk.StringVar()
-pessoa_2 = tk.StringVar()
-pessoa_3 = tk.StringVar()
-label_text = tk.StringVar()
-label_count = tk.Label(root)
-label_text.set("Sorteio")
-
-tk.Entry(root, textvariable=label_text,justify='center', font="Arial 16").pack(side='top', fill='x')
-
-tk.Label(frame_meio, text="1º Lugar").pack(side='top')
-entry_1 = tk.Entry(frame_meio, textvariable=pessoa_1, justify='center').pack()
-
-tk.Label(frame_esq, text="2º Lugar").pack(side='top')
-entry_2 = tk.Entry(frame_esq, textvariable=pessoa_2, justify='center').pack()
-
-tk.Label(frame_dir, text="3º Lugar").pack(side='top')
-entry_3 = tk.Entry(frame_dir, textvariable=pessoa_3, justify='center').pack()
-
-
-frame_esq.pack(side='left', padx= 10, ipady=10)
-frame_meio.pack(side='left', padx= 10, ipady=20)
-frame_dir.pack(side='left', padx= 10, ipady=5)
-frame_a.pack()
-
-tk.Button(root, text='Sortear!',command=lambda :sorteio()).pack(side='bottom')
-
 pessoas_para_sortear =["Naziond","Gilmeumo","Meindîr","Taron","Thurinpeu","Huam","Urbmeyble","Docuibush","Asba","Luglump","Shagnuehug","Mahkclo"]
 nomes_random = ["Nazfasdion","Gilmeufkmo","Meilhjkndîr","Tariupon","Thurinperteu","Huamahfg","Urbhafdmeyble","Docuilkjhbush","Asbhkla","Lugluhjhjkmp","Shagnhjkuehug","Mahkcsdftlo"]
 
@@ -75,13 +108,9 @@ p1 = pessoas_para_sortear[random.randrange(len(pessoas_para_sortear))]
 p2 = pessoas_para_sortear[random.randrange(len(pessoas_para_sortear))]
 p3 = pessoas_para_sortear[random.randrange(len(pessoas_para_sortear))]
 
-while p1 == p2:
-    p2 = pessoas_para_sortear[random.randrange(len(pessoas_para_sortear))]
+#Inicialização da Aplicação
+app = QApplication([])
+window = Window()
+window.show()
 
-while p3 == p1 or p3 == p2:
-    p3 = pessoas_para_sortear[random.randrange(len(pessoas_para_sortear))]
-
-
-
-
-root.mainloop()
+sys.exit(app.exec())
