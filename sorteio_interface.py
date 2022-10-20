@@ -7,6 +7,7 @@ from PySide6.QtGui import QMovie
 from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QGridLayout,
                                QLineEdit, QPushButton, QVBoxLayout, QWidget)
 
+listofsongs = ["Bau.mp3", "corneta.mp3"]
 pygame.mixer.init()
 pygame.mixer.music.load("Bau.mp3")
 
@@ -73,8 +74,11 @@ class Window(QWidget):
 	def sorteio(self):
 		global count
 		pygame.mixer.music.play()
+		pygame.mixer.music.queue("corneta.mp3")
 		count = 0
 		self.count10()
+		
+		
 
 	@Slot()
 	def count10(self):
@@ -88,10 +92,12 @@ class Window(QWidget):
 		self.pessoa_2.setText(n2)
 		self.pessoa_3.setText(n3)
 
-		if count >=10:
+		if count >=11:
 			self.pessoa_1.setText(p1)
 			self.pessoa_2.setText(p2)
 			self.pessoa_3.setText(p3)
+			
+
 		self.timer.start(100)
 	
 
